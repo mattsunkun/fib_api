@@ -3,7 +3,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel
 
-from fibonacci import fibonacci
+from functions.fibonacci import fibonacci
 from timeout_middleware import TimeoutMiddleware
 
 MIN_N = 1
@@ -42,7 +42,7 @@ app.add_middleware(
         response_model=FibonacciReponse, 
         description=f"フィボナッチ数列の第n項（{MIN_N}〜{MAX_N}の範囲）を取得できる。"
         )
-async def get_fibonacci(n: int = Query((MIN_N + MAX_N)//10 + 1, description="フィボナッチ数列の第n項")):
+async def get_fibonacci(n: int = Query(..., description="フィボナッチ数列の第n項")):
     if not (MIN_N <= n <= MAX_N):
         raise HTTPException(status_code=400, detail=f"nは{MIN_N}〜{MAX_N}の範囲である必要があります")
     return {"result": fibonacci(n)}
