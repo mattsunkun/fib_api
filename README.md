@@ -1,19 +1,25 @@
 # Why Python
 - `int` が巨大な数字に対しても可変に対応しているから。
 - `numpy` を用いて高速な行列処理ができるから。
-- `FastAPI` を用いたのは、`Python` の中で一番活発なサーバーモジュールなので、メンテナンスされていると考えたため。
+- `FastAPI` を用いた理由。
+  - `doc` の自動生成により、フロントエンドなどとの連携がしやすいため。
+  - `async` を用いて負荷分散ができるため。
 
 # How To
 ## Use
+Console↓
+```Shell
+$ pip install -r requirements.txt
+$ uvicorn main:app --reload
 ```
-
-```
+Access↓
+- PROTOCOL: `http`
 - ENDPOINT: `/fib`
 - QUERY PARAMETER: `n`
   - `1 <= n`
 
 ## Test
-```
+```Shell
 $ pip install -r requirements.txt
 $ python test_main.py
 ```

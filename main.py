@@ -1,12 +1,13 @@
-from fastapi import FastAPI, HTTPException, Request
+from fastapi import FastAPI, HTTPException, Query, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
+from pydantic import BaseModel
 
 from fibonacci import fibonacci
 from timeout_middleware import TimeoutMiddleware
 
 MIN_N = 1
-MAX_N = 10000
+MAX_N = 100
 FIB_PATH = "/fib"
 
 ALLOW_PATHS:set = {FIB_PATH}
@@ -14,7 +15,16 @@ ALLOW_METHOD:list = ["GET"]
 
 TIMEOUT = 3
 
-app = FastAPI()
+app = FastAPI(
+    title="数列 API",
+    description="この API は数列の第n項を返すものです。",
+    version="1.0.0"
+)
+
+class FibonacciReponse(BaseModel):
+    result: int
+
+
 app.add_middleware(TimeoutMiddleware, timeout=TIMEOUT)
 
 
@@ -27,8 +37,12 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-@app.get(FIB_PATH)
-def get_fibonacci(n: int):
+@app.get(
+        FIB_PATH, 
+        response_model=FibonacciReponse, 
+        description=f"フィボナッチ数列の第n項（{MIN_N}〜{MAX_N}の範囲）を取得できる。"
+        )
+async def get_fibonacci(n: int = Query((MIN_N + MAX_N)//10 + 1, description="フィボナッチ数列の第n項")):
     if not (MIN_N <= n <= MAX_N):
         raise HTTPException(status_code=400, detail=f"nは{MIN_N}〜{MAX_N}の範囲である必要があります")
     return {"result": fibonacci(n)}
