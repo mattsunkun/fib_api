@@ -21,10 +21,12 @@ app = FastAPI(
     version="1.0.0"
 )
 
+# フィボナッチ数列を返す時の型
 class FibonacciReponse(BaseModel):
     result: int
 
 
+# タイムアウト処理
 app.add_middleware(TimeoutMiddleware, timeout=TIMEOUT)
 
 
@@ -37,6 +39,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+# フィボナッチ数列バックエンド
 @app.get(
         FIB_PATH, 
         response_model=FibonacciReponse, 
